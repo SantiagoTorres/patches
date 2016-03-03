@@ -1,0 +1,12 @@
+875,877c875
+<     /* FIXME: patch of size of texas */
+< 	//pch_ctl2 = panel->backlight.max << 16;
+<     pch_ctl2 = 0x28b028b;
+---
+> 	pch_ctl2 = panel->backlight.max << 16;
+931,933c929
+<     /* FIXME: this is a patch of the size of texas */
+< 	//pch_ctl2 = panel->backlight.max << 16;
+< 	pch_ctl2 = 0x28b028b;
+---
+> 	pch_ctl2 = panel->backlight.max << 16;
