@@ -1,0 +1,51 @@
+From 09c5c3e330e2b907599d7aacf273735de5a61c5d Mon Sep 17 00:00:00 2001
+From: Santiago Torres <santiago@nyu.edu>
+Date: Mon, 4 Apr 2016 00:55:51 -0400
+Subject: [PATCH v4 4/5] tag.c: Change variable name for code readability
+
+the run_gpg_verify method has two variables: size and len, which might
+lead to confusion. We rename len to payload_size in order to address
+this.
+
+Signed-off-by: Santiago Torres <santiago@nyu.edu>
+---
+ tag.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/tag.c b/tag.c
+index 9debcfd..556623a 100644
+--- a/tag.c
++++ b/tag.c
+@@ -12,21 +12,21 @@ static int run_gpg_verify(const char *buf, unsigned long size, unsigned flags)
+ 	int len;
+ 	int ret;
+ 
+-       memset(&sigc, 0, sizeof(sigc));
++	memset(&sigc, 0, sizeof(sigc));
+ 
+-       len = parse_signature(buf, size);
++	len = parse_signature(buf, size);
+ 
+-       if (size == len) {
++	if (size == len) {
+ 		if (flags & GPG_VERIFY_VERBOSE)
+ 			write_in_full(1, buf, len);
+ 		return error("no signature found");
+-       }
+-
+-       ret = check_signature(buf, len, buf + len, size - len, &sigc);
+-       print_signature_buffer(&sigc, flags);
++	}
+ 
++	ret = check_signature(buf, len, buf + len, size - len, &sigc);
++	print_signature_buffer(&sigc, flags);
+ 	signature_check_clear(&sigc);
+-       return ret;
++
++	return ret;
+ }
+ 
+ int gpg_verify_tag(const char *name, unsigned flags)
+-- 
+2.8.0
+
