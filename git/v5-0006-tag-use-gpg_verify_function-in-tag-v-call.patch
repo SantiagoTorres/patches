@@ -1,0 +1,36 @@
+From 3b198d64137eb1e0a60bec721ce8f86c98a98015 Mon Sep 17 00:00:00 2001
+From: Santiago Torres <santiago@nyu.edu>
+Date: Tue, 5 Apr 2016 11:44:41 -0400
+Subject: [PATCH v5 6/6] tag: use gpg_verify_function in tag -v call
+
+Instead of running the verify-tag plumbing command, we use the
+gpg_verify_tag() function within the verify_tag function to avoid doing
+an additional fork call.
+
+Signed-off-by: Santiago Torres <santiago@nyu.edu>
+---
+ builtin/tag.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/builtin/tag.c b/builtin/tag.c
+index 1705c94..398c892 100644
+--- a/builtin/tag.c
++++ b/builtin/tag.c
+@@ -104,13 +104,7 @@ static int delete_tag(const char *name, const char *ref,
+ static int verify_tag(const char *name, const char *ref,
+ 				const unsigned char *sha1)
+ {
+-	const char *argv_verify_tag[] = {"verify-tag",
+-					"-v", "SHA1_HEX", NULL};
+-	argv_verify_tag[2] = sha1_to_hex(sha1);
+-
+-	if (run_command_v_opt(argv_verify_tag, RUN_GIT_CMD))
+-		return error(_("could not verify the tag '%s'"), name);
+-	return 0;
++	return gpg_verify_tag(sha1, GPG_VERIFY_VERBOSE);
+ }
+ 
+ static int do_sign(struct strbuf *buffer)
+-- 
+2.8.0
+
