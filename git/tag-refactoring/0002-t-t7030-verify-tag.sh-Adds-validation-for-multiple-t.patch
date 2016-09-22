@@ -1,0 +1,39 @@
+From f738a718bb7d7fef64a30c16df7a1888a8f67699 Mon Sep 17 00:00:00 2001
+From: Santiago Torres <santiago@nyu.edu>
+Date: Tue, 29 Mar 2016 13:49:54 -0400
+Subject: [PATCH 2/3] t/t7030-verify-tag.sh: Adds validation for multiple tags
+
+The verify-tag command supports mutliple tag names as an argument.
+However, no previous tests try to verify multiple tags at once. This
+test runs the verify-tag command against three trusted tags (created
+previously), and ensures that:
+
+	1) Three tags are verified appropriately (grep GOODSIG) and
+	2) The three tags verified are indeed differently (uniq
+		-u)
+
+Signed-off-by: Santiago Torres <santiago@nyu.edu>
+---
+ t/t7030-verify-tag.sh | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/t/t7030-verify-tag.sh b/t/t7030-verify-tag.sh
+index 4608e71..5918f86 100755
+--- a/t/t7030-verify-tag.sh
++++ b/t/t7030-verify-tag.sh
+@@ -112,4 +112,12 @@ test_expect_success GPG 'verify signatures with --raw' '
+ 	)
+ '
+ 
++test_expect_success GPG 'verify multiple tags' '
++	git verify-tag -v --raw fourth-signed sixth-signed seventh-signed 2>actual 1> tagnames &&
++		grep -c "GOODSIG" actual > count &&
++		! grep "BADSIG" actual &&
++		grep -E "tag\ .*" tagnames | uniq -u | wc - l | grep "3"
++'
++
++
+ test_done
+-- 
+2.7.0.753.gf738a71.dirty
+

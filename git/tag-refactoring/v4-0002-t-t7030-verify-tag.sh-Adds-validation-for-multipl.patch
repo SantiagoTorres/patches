@@ -1,0 +1,46 @@
+From 7cb4458236a831d123c723d03b2070305b074fba Mon Sep 17 00:00:00 2001
+From: Santiago Torres <santiago@nyu.edu>
+Date: Tue, 29 Mar 2016 13:49:54 -0400
+Subject: [PATCH v4 2/5] t/t7030-verify-tag.sh: Adds validation for multiple
+ tags
+
+The verify-tag command supports mutliple tag names as an argument.
+However, no previous tests try to verify multiple tags at once. This
+test runs the verify-tag command against three tags separately and then
+compares the result against the invocation with the same three tags as
+an argument. The results shouldn't differ.
+
+Signed-off-by: Santiago Torres <santiago@nyu.edu>
+---
+	Notes: I copied and pasted what was suggesed in [1]. I just verified
+that this suggestion indeed worked (by intentionally breaking the while loop).
+
+[1] http://git.661346.n2.nabble.com/PATCH-v3-0-4-tag-move-PGP-verification-code-to-tag-c-tp7652334p7652393.html
+
+ t/t7030-verify-tag.sh | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/t/t7030-verify-tag.sh b/t/t7030-verify-tag.sh
+index 4608e71..f9161332 100755
+--- a/t/t7030-verify-tag.sh
++++ b/t/t7030-verify-tag.sh
+@@ -112,4 +112,16 @@ test_expect_success GPG 'verify signatures with --raw' '
+ 	)
+ '
+ 
++test_expect_success GPG 'verify multiple tags' '
++	tags="fourth-signed sixth-signed seventh-signed" &&
++	for i in $tags; do
++		git verify-tag -v --raw $i || return 1
++	done >expect.stdout 2>expect.stderr.1 &&
++	grep GOODSIG <expect.stderr.1 >expect.stderr &&
++	git verify-tag -v --raw $tags >actual.stdout 2>actual.stderr.1 &&
++	grep GOODSIG <actual.stderr.1 >actual.stderr &&
++	test_cmp expect.stdout actual.stdout &&
++	test_cmp expect.stderr actual.stderr
++'
++
+ test_done
+-- 
+2.8.0
+
