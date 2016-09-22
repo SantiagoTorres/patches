@@ -1,0 +1,49 @@
+From 69bc2eec37968cbc6f2ff2912c68c435946da9b9 Mon Sep 17 00:00:00 2001
+From: Santiago Torres <santiago@nyu.edu>
+Date: Thu, 22 Sep 2016 14:04:00 -0400
+Subject: [RFC/PATCH 0/6]  Add --format to tag verification
+
+Hello everyone,
+
+This is a followup on [1]. There we discussed what would be the best way
+to provide automated scripts with mechanisms to inspect the contents of
+a tag upon verification.
+
+We struggled a little bit with how to make this fit the current git
+codebase in the best way. Specifically, we are not sure if adding the
+GPG_QUIET flags and/or exposing the primitives to allocate individual
+git_ref_item's would be the best way forward.
+
+This applies on the current HEAD as well as v 2.9.10.
+
+Thanks!
+-Santiago.
+
+P.S. Gmane seems to be broken for git after it was rebooted. Should we ping
+them about it?
+
+[1] http://lists-archives.com/git/869122-verify-tag-add-check-name-flag.html
+
+Lukas P (4):
+  gpg-interface: add GPG_VERIFY_QUIET flag
+  ref-filter: Expose wrappers for ref_item functions
+  tag: add format specifier to gpg_verify_tag
+  builtin/tag: add --format argument for tag -v
+
+Santiago Torres (2):
+  builtin/tag: move format specifier to global var
+  builtin/verify-tag: Add --format to verify-tag
+
+ builtin/tag.c        | 33 +++++++++++++++++++++------------
+ builtin/verify-tag.c | 17 ++++++++++++++---
+ gpg-interface.c      |  3 +++
+ gpg-interface.h      |  1 +
+ ref-filter.c         | 20 ++++++++++++++++++++
+ ref-filter.h         | 10 ++++++++++
+ tag.c                | 14 ++++++++++++--
+ tag.h                |  4 ++--
+ 8 files changed, 83 insertions(+), 19 deletions(-)
+
+-- 
+2.10.0
+
