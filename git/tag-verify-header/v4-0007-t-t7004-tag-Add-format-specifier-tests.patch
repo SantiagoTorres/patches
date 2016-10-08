@@ -1,0 +1,44 @@
+From 2056f673934af68d2a1126d1fe0f2370b77af4f5 Mon Sep 17 00:00:00 2001
+From: Santiago Torres <santiago@nyu.edu>
+Date: Thu, 6 Oct 2016 13:25:31 -0400
+Subject: [PATCH v4 7/7] t/t7004-tag: Add --format specifier tests
+
+tag -v now supports --format specifiers to inspect the contents of a tag
+upon verification. Add two tests to ensure this behavior is respected in
+future changes.
+
+Signed-off-by: Santiago Torres <santiago@nyu.edu>
+---
+ t/t7004-tag.sh | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/t/t7004-tag.sh b/t/t7004-tag.sh
+index 8b0f71a..633b089 100755
+--- a/t/t7004-tag.sh
++++ b/t/t7004-tag.sh
+@@ -847,6 +847,22 @@ test_expect_success GPG 'verifying a forged tag should fail' '
+ 	test_must_fail git tag -v forged-tag
+ '
+ 
++test_expect_success 'verifying a proper tag with --format pass and format accordingly' '
++	cat >expect <<-\EOF &&
++	tagname : signed-tag
++	EOF
++	git tag -v --format="tagname : %(tag)" "signed-tag" >actual &&
++	test_cmp expect actual
++'
++
++test_expect_success 'verifying a forged tag with --format fail and format accordingly' '
++	cat >expect <<-\EOF &&
++	tagname : forged-tag
++	EOF
++	test_must_fail git tag -v --format="tagname : %(tag)" "forged-tag" >actual &&
++	test_cmp expect actual
++'
++
+ # blank and empty messages for signed tags:
+ 
+ get_tag_header empty-signed-tag $commit commit $time >expect
+-- 
+2.10.0
+
